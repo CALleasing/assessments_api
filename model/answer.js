@@ -83,3 +83,46 @@ exports.updateManagerAnswer = async ({ userid, answer, year, part, number, video
         console.log(err.message);
     }
 };
+
+//========================= MANAGER ASSESSMENT ==============================
+
+exports.queryManagerAssessment = async ({ year, part, userid }) => {
+    try {
+        return await pool.query("SELECT * FROM aws3 WHERE userid=? and year = ? and part = ?",
+            [userid, year, part]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
+exports.insertManagerAssessment = async ({ userid, answer, year, part, date, department }) => {
+    try {
+        return await pool.query("INSERT INTO aws3 (userid, answer, year, part, date, department) VALUES (?,?,?,?,?,?)",
+            [userid, answer, year, part, date, department]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
+
+exports.updateManagerAssessment = async ({ userid, answer, year, part, date, department }) => {
+    try {
+        return await pool.query("UPDATE aws3 SET answer=?, date=?, department=? WHERE userid=? and year=? and part=?" ,
+            [answer, date, department, userid, year, part ]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
+exports.queryAllManagerAssessment = async ({ year, part, department }) => {
+    try {
+        return await pool.query("SELECT * FROM aws3 WHERE year=? and part=? and department=?" ,
+            [year, part, department]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};

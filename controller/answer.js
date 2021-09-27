@@ -125,7 +125,8 @@ exports.getManagerQuestionByUserId = (req, res, next) => {
         })
 };
 
-//============================= STAFF ANSWER ================================
+
+//============================== STAFF ANSWER ================================
 
 exports.getStaffAnswerFromUserIdByNumber = (req, res, next) => {
     const { year, part, userid, number } = req.params;
@@ -161,6 +162,76 @@ exports.postOrPutStaffAnswer = (req, res, next) => {
                     });
             } else {
                 answersModel.insertStaffAnswer({ userid, answer, year, part, number, videoURL, date })
+                    .then(() => {
+                        res.status(201)
+                            .json({
+                                message: 'success',
+
+                            })
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    })
+            }
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};
+
+//============================= MANAGER ASSESSMENT ==================================
+
+exports.getAllManagerAssessment = (req, res, next) => {
+    const { year, part, department } = req.params;
+
+    answersModel.queryAllManagerAssessment({ year, part, department })
+    .then(([row]) => {
+        res.send(row)
+    }).catch((error) => {
+        res.status(500).json({message: error})
+    });
+}
+
+exports.getManagerAssessmentFromUserId = (req, res, next) => {
+    const { year, part, userid } = req.params;
+
+    answersModel.queryManagerAssessment({ year, part, userid })
+        .then(([row]) => {
+            res.send(row)
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+
+}
+
+exports.postOrPutManagerAssessment = (req, res, next) => {
+    const { year, part, userid } = req.params;
+    const { answer, date, department } = req.body;
+
+    answersModel.queryManagerAssessment({ year, part, userid })
+        .then(([row]) => {
+            if (row.length !== 0) {
+                answersModel.updateManagerAssessment({ userid, answer, year, part, date, department })
+                    .then(() => {
+                        res.status(201)
+                            .json({
+                                message: 'success',
+                            })
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    });
+            } else {
+                answersModel.insertManagerAssessment({ userid, answer, year, part, date, department })
                     .then(() => {
                         res.status(201)
                             .json({
