@@ -13,8 +13,10 @@ router.get('/manager/:year/:part/:userid/:number', answersController.getManagerA
 router.post('/manager/:year/:part/:userid/:number', answersController.postOrPutManagerAnswer);
 // router.put('/manager/:year/:part/:userid/:number', answersController.putManagerAnswer);
 
-router.get('/manager_assessment/:year/:part/department/:department', answersController.getAllManagerAssessment);
-router.get('/manager_assessment/:year/:part/:userid', answersController.getManagerAssessmentFromUserId);
-router.post('/manager_assessment/:year/:part/:userid', answersController.postOrPutManagerAssessment);
+router.get('/comment/user/:year/:part/department/:department', answersController.getAllStaffComment);
+router.get('/comment/user/:year/:part/:manager_id/:userid', answersController.getStaffCommentByUserId);
+router.post('/comment/user/:year/:part/:userid/:number', answersController.postOrPutStaffComment);
+
+router.get('/comment/manager/:year/:part/:manager_id/:number', answersController.getStaffCOmmentWithManagerId);
 
 module.exports = router;

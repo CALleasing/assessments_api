@@ -20,6 +20,16 @@ exports.queryManagerQuestionWithAnswer = async ({ year, part, userid }) => {
     }
 };
 
+exports.queryStaffCommentWithAnswer = async ({ year, part, manager_id, userid }) => {
+    try {
+        return await pool.query("SELECT * FROM question3 LEFT JOIN aws3 ON question3.year = aws3.year and question3.part = aws3.part and question3.number = aws3.number  WHERE aws3.userid = ? and aws3.year = ? and aws3.part = ? and aws3.manager_id = ? order by aws3.number asc"
+            , [userid, year, part, manager_id]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
 //=============================  STAFF ANSWER =================================
 
 exports.queryStaffAnswer = async ({ year, part, userid, number }) => {
@@ -84,42 +94,54 @@ exports.updateManagerAnswer = async ({ userid, answer, year, part, number, video
     }
 };
 
-//========================= MANAGER ASSESSMENT ==============================
+//========================= STAFF COMMENT ==============================
 
-exports.queryManagerAssessment = async ({ year, part, userid }) => {
+exports.queryStaffComment = async ({ year, part, userid, number, manager_id }) => {
     try {
-        return await pool.query("SELECT * FROM aws3 WHERE userid=? and year = ? and part = ?",
-            [userid, year, part]);
+        // return await pool.query("SELECT aws3.userid, aws3.year, aws3.part, aws3.number, question3.qt, aws3.answer, aws3.date, aws3.department FROM `cal2009`.`aws3` INNER JOIN `cal2009`.`question3` ON  aws3.`year` = question3.`year` AND aws3.part = question3.part AND aws3.number = question3.number WHERE aws3.userid = ? AND aws3.year = ? AND aws3.part = ? ORDER BY number ",
+        return await pool.query("SELECT * FROM aws3 WHERE userid =? and year = ? and part = ? and number= ? and manager_id =?",
+            [userid, year, part, number, manager_id]);
     }
     catch (err) {
         console.log(err.message);
     }
 };
 
-exports.insertManagerAssessment = async ({ userid, answer, year, part, date, department }) => {
+exports.queryStaffCommentWithManagerId = async ({ year, part, manager_id, number }) => {
     try {
-        return await pool.query("INSERT INTO aws3 (userid, answer, year, part, date, department) VALUES (?,?,?,?,?,?)",
-            [userid, answer, year, part, date, department]);
+        return await pool.query("SELECT * FROM aws3 LEFT JOIN history ON aws3.userid = history.userid WHERE year = ? and part = ? and manager_id = ? and number= ? ",
+            [year, part, manager_id, number]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+}
+
+exports.insertStaffComment = async ({ userid, answer, year, part, number, date, department, reveal, manager_id }) => {
+    try {
+        console.log("INSERT", reveal)
+        return await pool.query("INSERT INTO aws3 (userid, answer, year, part, number, date, department, reveal, manager_id) VALUES (?,?,?,?,?,?,?,?,?)",
+            [userid, answer, year, part, number, date, department, reveal, manager_id]);
     }
     catch (err) {
         console.log(err.message);
     }
 };
 
-
-exports.updateManagerAssessment = async ({ userid, answer, year, part, date, department }) => {
+exports.updateStaffComment = async ({ userid, answer, year, part, number, date, reveal, manager_id }) => {
     try {
-        return await pool.query("UPDATE aws3 SET answer=?, date=?, department=? WHERE userid=? and year=? and part=?" ,
-            [answer, date, department, userid, year, part ]);
+        console.log("UPDATE", reveal)
+        return await pool.query("UPDATE aws3 SET answer=?, date=?, reveal=? WHERE userid=? and year=? and part=? and number=? and manager_id=?",
+            [answer, date, reveal, userid, year, part, number, manager_id]);
     }
     catch (err) {
         console.log(err.message);
     }
 };
 
-exports.queryAllManagerAssessment = async ({ year, part, department }) => {
+exports.queryAllStaffCOmment = async ({ year, part, department }) => {
     try {
-        return await pool.query("SELECT * FROM aws3 WHERE year=? and part=? and department=?" ,
+        return await pool.query("SELECT * FROM aws3 INNER JOIN history ON aws3.userid = history.userid WHERE aws3.year=? and aws3.part=? and aws3.department=?",
             [year, part, department]);
     }
     catch (err) {

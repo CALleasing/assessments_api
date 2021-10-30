@@ -25,6 +25,18 @@ exports.getUserById = (req, res, next) => {
         });
 };
 
+exports.getAllManagerPosition = (req, res, next) => {
+    const id = req.params.id;
+    console.log(id);
+    userModel.queryAllManagerPosition(id)
+        .then(([row]) => {
+            console.log(row);
+            res.send(row)
+        }).catch((err) => {
+            res.status(500).json({ message: err })
+        });
+};
+
 exports.getUserByDepartment = (req, res, next) => {
     const id = req.params.id;
     // console.log(department);

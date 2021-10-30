@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get('/', userController.getAllUsers);
 router.get('/:userid', userController.getUserById);
+// router.get('/')
+router.get('/position/:id', userController.getAllManagerPosition);
 router.get('/department/:id', userController.getUserByDepartment);
 
 router.get('/:year/:part/:choiceCount', userController.getUserStaffAnswerAllChoice);

@@ -53,6 +53,31 @@ exports.getManagerQuestionByNumber = (req, res, next) => {
         });
 };
 
+exports.getStaffComment = (req, res, next) => {
+    const { year, part } = req.params;
+    questionsModel.queryStaffComment({ year, part })
+        .then(([row]) => {
+            res.send(row);
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};
+
+exports.getStaffCommentByNumber = (req, res, next) => {
+    const { year, part, number } = req.params;
+    questionsModel.queryStaffCommentByNumber({ year, part, number })
+        .then(([row]) => {
+            res.send(row);
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};
 
 exports.postOrPutStaffQuestion = (req, res, next) => {
     const { year, part, number } = req.params;
@@ -140,6 +165,49 @@ exports.postOrPutManagerQuestion = (req, res, next) => {
         });
 };
 
+exports.postOrPutStaffComment = (req, res, next) => {
+    const { year, part, number } = req.params;
+    const { question } = req.body;
+    // const { answer, videoURL, date } = req.body;
+
+    questionsModel.queryStaffCommentByNumber({ year, part, number })
+        .then(([row]) => {
+            if (row.length !== 0) {
+                questionsModel.updateStaffComment({ year, part, number, question })
+                    .then(() => {
+                        res.status(201)
+                            .json({
+                                message: 'update success',
+                            })
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    });
+            } else {
+                questionsModel.insertStaffComment({ year, part, number, question })
+                    .then(() => {
+                        res.status(201)
+                            .json({
+                                message: 'insert success',
+
+                            })
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    })
+            }
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};
+
 exports.deleteStaffQuestionByNumber = (req, res, next) => {
     const { year, part, number } = req.params;
     questionsModel.deleteStaffQuestionByNumber({ year, part, number })
@@ -156,6 +224,19 @@ exports.deleteStaffQuestionByNumber = (req, res, next) => {
 exports.deleteManagerQuestionByNumber = (req, res, next) => {
     const { year, part, number } = req.params;
     questionsModel.deleteManagerQuestionByNumber({ year, part, number })
+        .then(([row]) => {
+            res.send(row);
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};
+
+exports.deleteStaffCommentByNumber = (req, res, next) => {
+    const { year, part, number } = req.params;
+    questionsModel.deleteStaffCommentByNumber({ year, part, number })
         .then(([row]) => {
             res.send(row);
         }).catch((error) => {

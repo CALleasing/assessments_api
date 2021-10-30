@@ -10,6 +10,15 @@ exports.queryAllUsers = async () => {
     }
 };
 
+exports.queryAllManagerPosition = async (id) => {
+    try {
+        return await pool.query("SELECT * FROM history WHERE position = ?", [id]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
 exports.queryUserById = async (userid) => {
     try {
         return await pool.query("SELECT * FROM history WHERE userid = ?", [userid]);

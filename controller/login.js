@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt');
 
 exports.postLogin = (req, res, next) => {
     const { userid, password } = req.body;
-    // console.log(userid);
+    console.log(userid);
+    console.log(password);
     loginModel.queryLogin({ id: userid })
         .then(([row]) => {
             if (row.length !== 0) {

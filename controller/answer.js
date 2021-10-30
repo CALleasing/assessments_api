@@ -125,7 +125,6 @@ exports.getManagerQuestionByUserId = (req, res, next) => {
         })
 };
 
-
 //============================== STAFF ANSWER ================================
 
 exports.getStaffAnswerFromUserIdByNumber = (req, res, next) => {
@@ -183,23 +182,87 @@ exports.postOrPutStaffAnswer = (req, res, next) => {
         });
 };
 
-//============================= MANAGER ASSESSMENT ==================================
+//============================= STAFF COMMENT ==================================
 
-exports.getAllManagerAssessment = (req, res, next) => {
+exports.getAllStaffComment = (req, res, next) => {
     const { year, part, department } = req.params;
 
-    answersModel.queryAllManagerAssessment({ year, part, department })
-    .then(([row]) => {
-        res.send(row)
-    }).catch((error) => {
-        res.status(500).json({message: error})
-    });
+    answersModel.queryAllStaffCOmment({ year, part, department })
+        .then(([row]) => {
+            res.send(row)
+        }).catch((error) => {
+            res.status(500).json({ message: error })
+        });
 }
 
-exports.getManagerAssessmentFromUserId = (req, res, next) => {
-    const { year, part, userid } = req.params;
+exports.getStaffCommentByUserId = (req, res, next) => {
+    const { year, part, manager_id, userid } = req.params;
 
-    answersModel.queryManagerAssessment({ year, part, userid })
+    answersModel.queryStaffCommentWithAnswer({ year, part, manager_id, userid })
+        .then(([row]) => {
+            if (row.length !== 0) {
+                te = []
+                questionsModel.queryStaffComment({ year, part })
+                    .then(([row1]) => {
+                        row1.forEach((element, index) => {
+
+                            row.forEach((element1) => {
+
+                                if (element.number === element1.number) {
+                                    console.log(element1)
+                                    te.push({
+                                        userid: element1.userid, year: element.year, part: element.part
+                                        , number: element.number, qt: element.qt, answer: element1.answer
+                                        , department: element1.department, date: element1.date
+                                        , reveal: element1.reveal, manager_id: element1.manager_id
+                                    })
+
+                                }
+
+                            })
+                            if (index >= te.length) {
+                                te.push({
+                                    year: element.year, part: element.part
+                                    , number: element.number, qt: element.qt
+                                })
+                            }
+                        })
+                        res.send(te)
+
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    })
+
+
+
+            } else {
+                questionsModel.queryStaffComment({ year, part })
+                    .then(([row]) => {
+                        res.send(row)
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    })
+
+            }
+
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        })
+};
+
+exports.getStaffCOmmentWithManagerId = (req, res, next) => {
+    const { year, part, manager_id, number } = req.params;
+
+    answersModel.queryStaffCommentWithManagerId({ year, part, manager_id, number })
         .then(([row]) => {
             res.send(row)
         }).catch((error) => {
@@ -211,14 +274,14 @@ exports.getManagerAssessmentFromUserId = (req, res, next) => {
 
 }
 
-exports.postOrPutManagerAssessment = (req, res, next) => {
-    const { year, part, userid } = req.params;
-    const { answer, date, department } = req.body;
+exports.postOrPutStaffComment = (req, res, next) => {
+    const { year, part, userid, number, } = req.params;
+    const { answer, date, department, reveal, manager_id } = req.body;
 
-    answersModel.queryManagerAssessment({ year, part, userid })
+    answersModel.queryStaffComment({ year, part, userid, number, manager_id })
         .then(([row]) => {
             if (row.length !== 0) {
-                answersModel.updateManagerAssessment({ userid, answer, year, part, date, department })
+                answersModel.updateStaffComment({ userid, answer, year, part, number, date, reveal, manager_id })
                     .then(() => {
                         res.status(201)
                             .json({
@@ -231,7 +294,7 @@ exports.postOrPutManagerAssessment = (req, res, next) => {
                             })
                     });
             } else {
-                answersModel.insertManagerAssessment({ userid, answer, year, part, date, department })
+                answersModel.insertStaffComment({ userid, answer, year, part, number, date, department, reveal, manager_id })
                     .then(() => {
                         res.status(201)
                             .json({
