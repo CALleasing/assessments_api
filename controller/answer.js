@@ -259,10 +259,10 @@ exports.getStaffCommentByUserId = (req, res, next) => {
         })
 };
 
-exports.getStaffCOmmentWithManagerId = (req, res, next) => {
+exports.getStaffCommentWithManagerIdAndNumber = (req, res, next) => {
     const { year, part, manager_id, number } = req.params;
 
-    answersModel.queryStaffCommentWithManagerId({ year, part, manager_id, number })
+    answersModel.queryStaffCommentWithManagerIdAndNumber({ year, part, manager_id, number })
         .then(([row]) => {
             res.send(row)
         }).catch((error) => {
@@ -271,8 +271,22 @@ exports.getStaffCOmmentWithManagerId = (req, res, next) => {
                     message: error
                 })
         });
-
 }
+
+exports.getAllStaffCommentWithManagerId = (req, res, next) => {
+    const { year, part, manager_id } = req.params;
+
+    answersModel.queryAllStaffCommentWithManagerId({ year, part, manager_id })
+        .then(([row]) => {
+            res.send(row)
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+}
+
 
 exports.postOrPutStaffComment = (req, res, next) => {
     const { year, part, userid, number, } = req.params;

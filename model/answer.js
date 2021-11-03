@@ -98,6 +98,7 @@ exports.updateManagerAnswer = async ({ userid, answer, year, part, number, video
 
 exports.queryStaffComment = async ({ year, part, userid, number, manager_id }) => {
     try {
+        console.log("GET")
         // return await pool.query("SELECT aws3.userid, aws3.year, aws3.part, aws3.number, question3.qt, aws3.answer, aws3.date, aws3.department FROM `cal2009`.`aws3` INNER JOIN `cal2009`.`question3` ON  aws3.`year` = question3.`year` AND aws3.part = question3.part AND aws3.number = question3.number WHERE aws3.userid = ? AND aws3.year = ? AND aws3.part = ? ORDER BY number ",
         return await pool.query("SELECT * FROM aws3 WHERE userid =? and year = ? and part = ? and number= ? and manager_id =?",
             [userid, year, part, number, manager_id]);
@@ -107,10 +108,20 @@ exports.queryStaffComment = async ({ year, part, userid, number, manager_id }) =
     }
 };
 
-exports.queryStaffCommentWithManagerId = async ({ year, part, manager_id, number }) => {
+exports.queryStaffCommentWithManagerIdAndNumber = async ({ year, part, manager_id, number }) => {
     try {
         return await pool.query("SELECT * FROM aws3 LEFT JOIN history ON aws3.userid = history.userid WHERE year = ? and part = ? and manager_id = ? and number= ? ",
             [year, part, manager_id, number]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+}
+
+exports.queryAllStaffCommentWithManagerId = async ({ year, part, manager_id }) => {
+    try {
+        return await pool.query("SELECT aws3.userid, answer, aws3.year, aws3.part , aws3.number, date, aws3.department, reveal, manager_id, qt, name, lastname, nickname FROM aws3 LEFT JOIN question3 ON aws3.year = question3.year AND aws3.part = question3.part AND aws3.number = question3.number LEFT JOIN history ON aws3.userid = history.userid WHERE aws3.year=? AND aws3.part=? AND `manager_id` = ? ORDER BY userid, aws3.number",
+            [year, part, manager_id]);
     }
     catch (err) {
         console.log(err.message);
