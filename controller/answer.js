@@ -388,20 +388,49 @@ exports.postOrPutManagerAnswer = (req, res, next) => {
         });
 };
 
-// exports.putManagerAnswer = (req, res, next) => {
-//     const { year, part, userid, number } = req.params;
-//     const { answer, videoURL, date } = req.body;
+// =================================== MANAGER EMPLOYEE ASSESSMENT ===================================
 
-//     answersModel.updateManagerAnswer({ userid, answer, year, part, number, videoURL, date })
-//         .then(() => {
-//             res.status(201)
-//                 .json({
-//                     message: 'success',
-//                 })
-//         }).catch((error) => {
-//             res.status(500)
-//                 .json({
-//                     message: error
-//                 })
-//         });
-// };
+exports.postEmployeeAssessment = (req, res, next) => {
+    // console.log(req.body);
+    const { userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname } = req.body;
+    answersModel.insertEmployeeAssessment({ userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname })
+        .then(() => {
+            res.status(201)
+                .json({
+                    message: 'success',
+
+                })
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};
+
+exports.getAllEmployeeAssessment = (req, res, next) => {
+    answersModel.queryAllEmployeeAssessment()
+        .then(([row]) => {
+            res.send(row);
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};
+
+exports.deleteEmployeeAssessmentFromUserid = (req, res, next) => {
+    console.log(req.body)
+    const { userid, answer, manager_id } = req.body;
+
+    answersModel.deleteEmployeeAssessment({ userid, answer, manager_id })
+        .then(([row]) => {
+            res.send(row);
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+};

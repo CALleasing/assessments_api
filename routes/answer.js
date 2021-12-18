@@ -20,4 +20,8 @@ router.post('/comment/user/:year/:part/:userid/:number', answersController.postO
 router.get('/comment/manager/:year/:part/:manager_id/:number', answersController.getStaffCommentWithManagerIdAndNumber);
 router.get('/comment/manager/:year/:part/:manager_id' , answersController.getAllStaffCommentWithManagerId);
 
+router.get('/assessment', answersController.getAllEmployeeAssessment);
+router.post('/assessment', answersController.postEmployeeAssessment);
+router.delete('/assessment', answersController.deleteEmployeeAssessmentFromUserid);
+
 module.exports = router;

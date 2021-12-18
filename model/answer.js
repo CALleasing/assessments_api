@@ -159,3 +159,36 @@ exports.queryAllStaffCOmment = async ({ year, part, department }) => {
         console.log(err.message);
     }
 };
+
+//=========================== MANAGER EMPLOYEE ASSESSMENT ===============================
+
+exports.insertEmployeeAssessment = async ({ userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname }) => {
+    try {
+        // console.log("INSERT", lastname)
+        return await pool.query("INSERT INTO assessment_employee (userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            [userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
+exports.queryAllEmployeeAssessment = async () => {
+    try {
+        return await pool.query("SELECT * FROM assessment_employee ORDER BY date DESC");
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
+exports.deleteEmployeeAssessment = async ({ userid, answer, manager_id }) => {
+    console.log(userid)
+    try {
+        return await pool.query("DELETE FROM assessment_employee WHERE userid=? and answer=? and manager_id=?;",
+            [userid, answer, manager_id]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+}
