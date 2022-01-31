@@ -393,13 +393,40 @@ exports.postOrPutManagerAnswer = (req, res, next) => {
 exports.postEmployeeAssessment = (req, res, next) => {
     // console.log(req.body);
     const { userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname } = req.body;
-    answersModel.insertEmployeeAssessment({ userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname })
-        .then(() => {
-            res.status(201)
-                .json({
-                    message: 'success',
 
-                })
+    answersModel.queryEmployeeAssessmentByUserId({ userid })
+        .then(([row]) => {
+            // res.send(row);
+            if (row.length != 0) {
+                answersModel.updateEmployeeAssessmentByUserid({ userid, answer, reason, date })
+                    .then(() => {
+                        res.status(201)
+                            .json({
+                                message: 'success',
+                            })
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    });
+            }
+            else {
+                answersModel.insertEmployeeAssessment({ userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname })
+                    .then(() => {
+                        res.status(200)
+                            .json({
+                                message: 'success',
+
+                            })
+                    }).catch((error) => {
+                        res.status(500)
+                            .json({
+                                message: error
+                            })
+                    });
+            }
+
         }).catch((error) => {
             res.status(500)
                 .json({
@@ -419,6 +446,35 @@ exports.getAllEmployeeAssessment = (req, res, next) => {
                 })
         });
 };
+
+exports.getEmployeeAssessmentByDepartment = (req, res, next) => {
+    const { department } = req.params;
+
+    answersModel.queryEmployeeAssessmentByDepartment({ department })
+        .then(([row]) => {
+            res.send(row);
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+}
+
+exports.getEmployeeAssessmentByUserId = (req, res, next) => {
+    const { userid } = req.params;
+    console.log(req.params)
+
+    answersModel.queryEmployeeAssessmentByUserId({ userid })
+        .then(([row]) => {
+            res.send(row);
+        }).catch((error) => {
+            res.status(500)
+                .json({
+                    message: error
+                })
+        });
+}
 
 exports.deleteEmployeeAssessmentFromUserid = (req, res, next) => {
     console.log(req.body)

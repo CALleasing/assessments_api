@@ -18,9 +18,11 @@ router.get('/comment/user/:year/:part/:manager_id/:userid', answersController.ge
 router.post('/comment/user/:year/:part/:userid/:number', answersController.postOrPutStaffComment);
 
 router.get('/comment/manager/:year/:part/:manager_id/:number', answersController.getStaffCommentWithManagerIdAndNumber);
-router.get('/comment/manager/:year/:part/:manager_id' , answersController.getAllStaffCommentWithManagerId);
+router.get('/comment/manager/:year/:part/:manager_id', answersController.getAllStaffCommentWithManagerId);
 
 router.get('/assessment', answersController.getAllEmployeeAssessment);
+router.get('/assessment/departments/:department', answersController.getEmployeeAssessmentByDepartment);
+router.get('/assessment/users/:userid', answersController.getEmployeeAssessmentByUserId);
 router.post('/assessment', answersController.postEmployeeAssessment);
 router.delete('/assessment', answersController.deleteEmployeeAssessmentFromUserid);
 

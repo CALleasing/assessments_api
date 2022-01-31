@@ -173,6 +173,16 @@ exports.insertEmployeeAssessment = async ({ userid, answer, reason, name, lastna
     }
 };
 
+exports.updateEmployeeAssessmentByUserid = async ({ userid, answer, reason, date }) => {
+    try {
+        return await pool.query("UPDATE assessment_employee SET answer = ?, reason = ?, date = ? WHERE userid =?",
+            [answer, reason, date, userid]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+}
+
 exports.queryAllEmployeeAssessment = async () => {
     try {
         return await pool.query("SELECT * FROM assessment_employee ORDER BY date DESC");
@@ -182,8 +192,26 @@ exports.queryAllEmployeeAssessment = async () => {
     }
 };
 
+exports.queryEmployeeAssessmentByDepartment = async ({ department }) => {
+    try {
+        return await pool.query("SELECT * FROM assessment_employee WHERE department = ? ORDER BY date DESC", [department]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+}
+
+exports.queryEmployeeAssessmentByUserId = async ({ userid }) => {
+    try {
+        return await pool.query("SELECT * FROM assessment_employee WHERE userid = ?", [userid]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
 exports.deleteEmployeeAssessment = async ({ userid, answer, manager_id }) => {
-    console.log(userid)
+    // console.log(userid)
     try {
         return await pool.query("DELETE FROM assessment_employee WHERE userid=? and answer=? and manager_id=?;",
             [userid, answer, manager_id]);
