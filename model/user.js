@@ -48,6 +48,32 @@ exports.queryUserStaffAnswerAllChoice = async ({ year, part, choiceCount }) => {
     }
 };
 
+exports.queryUserStaffAnswerNotComplete = async ({ year, part, choiceCount }) => {
+    console.log(year);
+    console.log(part);
+    console.log(choiceCount);
+    try {
+        return await pool.query("SELECT  *  FROM history LEFT JOIN aws2 ON aws2.userid = history.userid WHERE aws2.year = ? and aws2.part = ? GROUP BY aws2.userid HAVING count(aws2.number) < ?",
+            [year, part, choiceCount]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
+exports.queryUserStaffAnswerNotComplete = async ({ year, part, choiceCount }) => {
+    console.log(year);
+    console.log(part);
+    console.log(choiceCount);
+    try {
+        return await pool.query("SELECT * FROM history LEFT JOIN aws2 ON aws2.userid = history.userid WHERE aws2.year = ? and aws2.part = ? GROUP BY aws2.userid HAVING count(aws2.number) < ?",
+            [year, part, choiceCount]);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
 exports.queryUserManagerAnswerAllChoice = async ({ year, part, choiseCount }) => {
     try {
         return await pool.query("SELECT  *  FROM history LEFT JOIN aws1 ON aws1.userid = history.userid WHERE aws1.year = ? and aws1.part = ? GROUP BY aws1.userid HAVING count(aws1.number) >= ?",

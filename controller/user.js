@@ -61,4 +61,16 @@ exports.getUserStaffAnswerAllChoice = (req, res, next) => {
         });
 };
 
+exports.getUserStaffAnswerNotComplete = (req, res, next) => {
+    const { year, part, choiceCount } = req.params;
+    console.log(req.params);
+    userModel.queryUserStaffAnswerNotComplete({ year, part, choiceCount })
+        .then(([row]) => {
+            console.log(row);
+            res.send(row)
+        }).catch((err) => {
+            res.status(500).json({ message: err })
+        });
+};
+
 
