@@ -450,7 +450,7 @@ exports.postOrPutManagerAnswer = (req, res, next) => {
 // =================================== MANAGER EMPLOYEE ASSESSMENT ===================================
 
 exports.postEmployeeAssessment = (req, res, next) => {
-  // console.log(req.body);
+  const { year, part } = req.params;
   const {
     userid,
     answer,
@@ -467,12 +467,25 @@ exports.postEmployeeAssessment = (req, res, next) => {
   } = req.body;
 
   answersModel
-    .queryEmployeeAssessmentByUserId({ userid })
+    .queryEmployeeAssessmentUserIdByManagerid({
+      year,
+      part,
+      userid,
+      manager_id,
+    })
     .then(([row]) => {
       // res.send(row);
-      if (row.length != 0) {
+      console.log(row);
+      if (row.length !== 0) {
         answersModel
-          .updateEmployeeAssessmentByUserid({ userid, answer, reason, date })
+          .updateEmployeeAssessmentByUserid({
+            year,
+            part,
+            userid,
+            answer,
+            reason,
+            date,
+          })
           .then(() => {
             res.status(201).json({
               message: "success",
@@ -486,6 +499,8 @@ exports.postEmployeeAssessment = (req, res, next) => {
       } else {
         answersModel
           .insertEmployeeAssessment({
+            year,
+            part,
             userid,
             answer,
             reason,
@@ -533,10 +548,10 @@ exports.getAllEmployeeAssessment = (req, res, next) => {
 };
 
 exports.getEmployeeAssessmentByDepartment = (req, res, next) => {
-  const { department } = req.params;
+  const { year, part, department } = req.params;
 
   answersModel
-    .queryEmployeeAssessmentByDepartment({ department })
+    .queryEmployeeAssessmentByDepartment({ year, part, department })
     .then(([row]) => {
       res.send(row);
     })
@@ -547,12 +562,17 @@ exports.getEmployeeAssessmentByDepartment = (req, res, next) => {
     });
 };
 
-exports.getEmployeeAssessmentByUserId = (req, res, next) => {
-  const { userid } = req.params;
+exports.getEmployeeAssessmentUserIdByManagerId = (req, res, next) => {
+  const { year, part, manager_id, userid } = req.params;
   console.log(req.params);
 
   answersModel
-    .queryEmployeeAssessmentByUserId({ userid })
+    .queryEmployeeAssessmentUserIdByManagerid({
+      year,
+      part,
+      userid,
+      manager_id,
+    })
     .then(([row]) => {
       res.send(row);
     })

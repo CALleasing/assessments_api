@@ -62,8 +62,8 @@ router.get(
   answersController.getEmployeeAssessmentByDepartment
 );
 router.get(
-  "/assessment/:year/:part/users/:userid",
-  answersController.getEmployeeAssessmentByUserId
+  "/assessment/:year/:part/manager/:manager_id/users/:userid",
+  answersController.getEmployeeAssessmentUserIdByManagerId
 );
 router.post(
   "/assessment/:year/:part",

@@ -224,6 +224,7 @@ exports.updateStaffComment = async ({
   reveal,
   manager_id,
 }) => {
+  console.log("TEST");
   try {
     console.log("UPDATE", reveal);
     return await pool.query(
@@ -249,6 +250,8 @@ exports.queryAllStaffCOmment = async ({ year, part, department }) => {
 //=========================== MANAGER EMPLOYEE ASSESSMENT ===============================
 
 exports.insertEmployeeAssessment = async ({
+  year,
+  part,
   userid,
   answer,
   reason,
@@ -265,8 +268,10 @@ exports.insertEmployeeAssessment = async ({
   try {
     // console.log("INSERT", lastname)
     return await pool.query(
-      "INSERT INTO assessment_employee (userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO assessment_employee (year, part, userid, answer, reason, name, lastname, nickname, date, department, manager_id, manager_name, manager_lastname, manager_nickname) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
+        year,
+        part,
         userid,
         answer,
         reason,
@@ -291,11 +296,13 @@ exports.updateEmployeeAssessmentByUserid = async ({
   answer,
   reason,
   date,
+  year,
+  part,
 }) => {
   try {
     return await pool.query(
-      "UPDATE assessment_employee SET answer = ?, reason = ?, date = ? WHERE userid =?",
-      [answer, reason, date, userid]
+      "UPDATE assessment_employee SET answer = ?, reason = ?, date = ? WHERE userid =? AND year=? AND part=?",
+      [answer, reason, date, userid, year, part]
     );
   } catch (err) {
     console.log(err.message);
@@ -313,22 +320,32 @@ exports.queryAllEmployeeAssessment = async ({ year, part }) => {
   }
 };
 
-exports.queryEmployeeAssessmentByDepartment = async ({ department }) => {
+exports.queryEmployeeAssessmentByDepartment = async ({
+  year,
+  part,
+  department,
+}) => {
   try {
     return await pool.query(
-      "SELECT * FROM assessment_employee WHERE department = ? ORDER BY date DESC",
-      [department]
+      "SELECT * FROM assessment_employee WHERE year =? AND part =? AND department = ? ORDER BY date DESC",
+      [year, part, department]
     );
   } catch (err) {
     console.log(err.message);
   }
 };
 
-exports.queryEmployeeAssessmentByUserId = async ({ userid }) => {
+exports.queryEmployeeAssessmentUserIdByManagerid = async ({
+  year,
+  part,
+  userid,
+  manager_id,
+}) => {
+  console.log("GET");
   try {
     return await pool.query(
-      "SELECT * FROM assessment_employee WHERE userid = ?",
-      [userid]
+      "SELECT * FROM assessment_employee WHERE year= ? AND part =? AND userid = ? AND manager_id =?",
+      [year, part, userid, manager_id]
     );
   } catch (err) {
     console.log(err.message);
